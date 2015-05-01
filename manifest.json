@@ -1,0 +1,15 @@
+{
+    "name": "currencyconverter.turan-mahmudov-l",
+    "description": "Currency converter for Ubuntu Touch",
+    "architecture": "all",
+    "title": "Currency Converter",
+    "hooks": {
+        "CurrencyConverter": {
+            "apparmor": "CurrencyConverter.apparmor",
+            "desktop": "CurrencyConverter.desktop"
+        }
+    },
+    "version": "0.2",
+    "maintainer": "Turan Mahmudov <turan.mahmudov@gmail.com>",
+    "framework": "ubuntu-sdk-14.10"
+}
