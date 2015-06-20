@@ -51,35 +51,37 @@ function deleteKey(key) {
 }
 
 function convert(from, to, amount) {
+    camount.text = i18n.tr("Converting...");
+
     setKey("from", from);
     setKey("to", to);
 
-    var url = "http://www.freecurrencyconverterapi.com/api/v3/convert?q="+currencies[from]+"_"+currencies[to]+"&compact=ultra";
     if (!amount) {
         amount = 1;
     }
+
+    var url = "https://openexchangerates.org/api/latest.json?app_id=4f18c99677ae4be3be926597016fd4c0";
 
     var xhr = new XMLHttpRequest;
     xhr.open("GET", url);
     xhr.onreadystatechange = function() {
         if (xhr.readyState === XMLHttpRequest.DONE) {
-            console.log(xhr.responseText)
+            //console.log(xhr.responseText)
 
             var results = JSON.parse(xhr.responseText);
-            var i = 0;
-            for (i in results) {
-                var c = results[i];
-            }
 
-            camount.text = c*amount;
-            console.log(c);
+            var nfrom = results['rates'][currencies[from]];
+            var nto = results['rates'][currencies[to]];
+
+            camount.text = parseFloat((amount/nfrom)*nto).toFixed(3);
+            //console.log(c);
         }
     }
     xhr.send();
 }
 
 function allcurrencies() {
-    var url = "http://www.freecurrencyconverterapi.com/api/v3/currencies";
+    var url = "https://openexchangerates.org/api/currencies.json?app_id=4f18c99677ae4be3be926597016fd4c0";
 
     var xhr = new XMLHttpRequest;
     xhr.open("GET", url);
@@ -87,14 +89,11 @@ function allcurrencies() {
         if (xhr.readyState === XMLHttpRequest.DONE) {
             var results = JSON.parse(xhr.responseText);
             var i = 0;
-            var j = 0;
             var keysSorted;
-            for (j in results) {
-                keysSorted = Object.keys(results[j]).sort()
-                for (i = 0; i < keysSorted.length; i++) {
-                    currencies.push(keysSorted[i]);
-                    currenciesModel.append({"name":results[j][keysSorted[i]]["currencyName"], "symbol":results[j][keysSorted[i]]["id"]})
-                }
+            keysSorted = Object.keys(results).sort()
+            for (i = 0; i < keysSorted.length; i++) {
+                currencies.push(keysSorted[i]);
+                currenciesModel.append({"name":results[keysSorted[i]], "symbol":keysSorted[i]})
             }
         }
     }
